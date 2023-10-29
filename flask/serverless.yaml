@@ -1,0 +1,69 @@
+service: ${env:APP_NAME}
+variablesResolutionMode: 20210326
+
+frameworkVersion: "3"
+configValidationMode: error
+
+useDotenv: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-resource-tagging
+  - serverless-tag-cloud-watch-logs
+  - serverless-python-requirements
+  - serverless-wsgi
+
+provider:
+  name: aws
+  region: ${env:AWS_REGION, 'us-east-2'}
+  logRetentionInDays: ${env:LOG_RETENTION_IN_DAYS, 3}
+  lambdaHashingVersion: 20201221
+  deploymentBucket: ${env:LAMBDA_DEPLOYMENT_BUCKET, '000'}
+  deploymentPrefix: ${self:service}
+  stackTags:
+    App: ${self:service}
+    Env: ${env:ENVIRONMENT_NAME}
+    Iac: serverless
+    Repository: madeiramadeirabr/${self:service}
+    Vertical: ${env:VERTICAL_NAME, null}
+
+custom:
+  param: ${file(serverless-env/${env:ENVIRONMENT_NAME}.yaml)}
+  cloudWatchLogsTags: ${self:provider.stackTags}
+  wsgi:
+    app: src/main.app
+    packRequirements: false
+
+package:
+  patterns:
+    - "!*"
+    - "!*/**/*"
+    - src/**
+
+functions:
+  app:
+    handler: ${env:TWISTLOCK_HANDLER, self:functions.app.environment.ORIGINAL_HANDLER}
+    name: ${self:service}-${env:ENVIRONMENT_NAME}
+    runtime: ${env:LAMBDA_RUNTIME}
+    memorySize: ${env:LAMBDA_MEMORY_SIZE, 128}
+    timeout: ${env:LAMBDA_TIMEOUT}
+    maximumRetryAttempts: ${env:LAMBDA_MAXIMUM_RETRY_ATTEMPTS, 2}
+    role: ${env:LAMBDA_EXECUTION_ROLE_ARN, '0'}
+    layers: ${self:custom.param.layers, null}
+    environment:
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: false
+      NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS: true
+      NEW_RELIC_LAMBDA_HANDLER: ${env:LAMBDA_HANDLER}
+      ORIGINAL_HANDLER: ${env:NEW_RELIC_HANDLER, env:LAMBDA_HANDLER}
+      TW_POLICY: ${env:TW_POLICY, ''}
+      ENVIRONMENT_NAME: ${env:ENVIRONMENT_NAME}
+
+    events: ${self:custom.param.events, null}
+
+    vpc:
+      securityGroupIds:
+        - ${env:LAMBDA_SECURITY_GROUP_ID, '0'}
+      subnetIds:
+        - ${env:SUBNET_ID_0, '0'}
+        - ${env:SUBNET_ID_1, '0'}
+        - ${env:SUBNET_ID_2, '0'}

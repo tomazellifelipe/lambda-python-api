@@ -1,0 +1,19 @@
+{
+  "name": "fastapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "export ENVIRONMENT_NAME=development && npx sls wsgi serve"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^3.36.0",
+    "serverless-offline": "^13.2.0",
+    "serverless-plugin-resource-tagging": "^1.2.0",
+    "serverless-python-requirements": "^6.0.0",
+    "serverless-tag-cloud-watch-logs": "^1.0.0",
+    "serverless-wsgi": "^3.0.3"
+  }
+}

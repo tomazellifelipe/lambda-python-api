@@ -1,0 +1,5 @@
+handler: ${env:LAMBDA_HANDLER}
+events:
+  - http:
+      path: /{proxy+}
+      method: ANY
