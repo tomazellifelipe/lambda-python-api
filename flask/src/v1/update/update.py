@@ -9,4 +9,6 @@ router = Blueprint(name="update", import_name=__name__)
 
 @router.route("", methods=["GET"])
 def update():
-    return build_response(http_status=HTTPStatus.OK, body={"message": "something was updated"})
+    return build_response(
+        http_status=HTTPStatus.OK, body={"message": "something was updated"}
+    )

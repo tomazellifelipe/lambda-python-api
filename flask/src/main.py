@@ -10,4 +10,6 @@ app.register_blueprint(v1_router)
 
 @app.route("/ping", methods=["GET"])
 def healthcheck():
-    return build_response(http_status=HTTPStatus.OK, body={"message": "Pong, system is online"})
+    return build_response(
+        http_status=HTTPStatus.OK, body={"message": "Pong, system is online"}
+    )

@@ -9,4 +9,6 @@ router = Blueprint(name="delete", import_name=__name__)
 
 @router.route("", methods=["GET"])
 def delete():
-    return build_response(http_status=HTTPStatus.OK, body={"message": "something was deleted"})
+    return build_response(
+        http_status=HTTPStatus.OK, body={"message": "something was deleted"}
+    )
