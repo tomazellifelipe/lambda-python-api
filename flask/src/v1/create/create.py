@@ -1,9 +1,11 @@
-from flask import Blueprint, request
+import logging
 from http import HTTPStatus
-from pydantic import ValidationError
 
+from pydantic import ValidationError
 from src.utils.http_response import build_response
 from src.v1.schemas.item import Item
+
+from flask import Blueprint, request
 
 router = Blueprint(name="create", import_name=__name__)
 
@@ -18,4 +20,5 @@ def create():
             body={"message": "bad request", "errors": e.errors()},
         )
     message = f"item {item.name} was created with price R${item.price:.2f}"
+    logging.debug('Item created', item.model_dump())
     return build_response(http_status=HTTPStatus.OK, body={"message": message})
