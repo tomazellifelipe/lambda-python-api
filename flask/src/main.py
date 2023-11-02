@@ -1,12 +1,12 @@
 from http import HTTPStatus
 
-# from src.utils import logger
+from src.utils import logger
 from src.utils.http_response import build_response
 from src.v1.routes import router as v1_router
 
 from flask import Flask
 
-# logger.load()
+logger.load()
 app = Flask(__name__)
 app.register_blueprint(v1_router)
 

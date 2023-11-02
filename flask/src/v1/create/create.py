@@ -18,10 +18,11 @@ def event_validator(model):
             try:
                 _ = model(**request.json)
             except ValidationError as e:
+                logging.debug("bad request", e.errors()[0])
                 return build_response(
                     http_status=HTTPStatus.BAD_REQUEST,
-                    body={"message": "bad request from inside wrapper", "errors": e.errors()},
-                )
+                    body={"message": "bad request", "errors": e.errors()},
+                ), 400
             return f(*args, **kwargs)
         return validator
     return wrapper
@@ -30,13 +31,7 @@ def event_validator(model):
 @router.route("", methods=["POST"])
 @event_validator(model=Item)
 def create():
-    try:
-        item = Item(**request.json)
-    except ValidationError as e:
-        return build_response(
-            http_status=HTTPStatus.BAD_REQUEST,
-            body={"message": "bad request", "errors": e.errors()},
-        )
+    item = Item(**request.json)
     message = f"item {item.name} was created with price R${item.price:.2f}"
-    print('Item created', item.model_dump())
-    return build_response(http_status=HTTPStatus.OK, body={"message": message})
+    logging.debug('Item created', item.model_dump())
+    return build_response(http_status=HTTPStatus.OK, body={"message": message}), 200
