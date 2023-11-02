@@ -13,20 +13,22 @@ class FormatterMmRfc(logging.Formatter):
 
 
 def load() -> None:
-    formatter = FormatterMmRfc(f'''
-            {{
+    formatter = FormatterMmRfc(
+        """
+            {
               "global_event_timestamp": "%(asctime)s",
-              "level": "%(levelname)s", 
+              "level": "%(levelname)s",
               "message": "%(message)s",
               "context": "%(args)s",
               "path_name": "%(pathname)s",
               "func_name": "%(funcName)s",
               "service_name": "Example Lambda Api"
-            }}
-    ''')
+            }
+        """
+    )
 
     logger = logging.getLogger()
-    logger.setLevel('WARNING')
+    logger.setLevel("WARNING")
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     logger.addHandler(handler)

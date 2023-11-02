@@ -1,13 +1,17 @@
-from flask import Blueprint
+import logging
+from http import HTTPStatus
 
-from src.v1.create import create
-from src.v1.read import read
-from src.v1.update import update
-from src.v1.delete import delete
-
+from flask import Blueprint, Response
+from src.utils.http_response import build_response
+from src.utils.parser import event_validator
+from src.v1.models import Item
 
 router = Blueprint(name="api", import_name=__name__, url_prefix="/api/v1")
-router.register_blueprint(create.router, url_prefix="/create")
-router.register_blueprint(read.router, url_prefix="/read")
-router.register_blueprint(update.router, url_prefix="/update")
-router.register_blueprint(delete.router, url_prefix="/delete")
+
+
+@router.route("/create", methods=["POST"])
+@event_validator(model=Item)
+def create(event: Item) -> tuple[Response, int]:
+    message = f"item {event.name} was created with price R${event.price:.2f}"
+    logging.debug("Item created", event.model_dump())
+    return build_response(body={"message": message}), HTTPStatus.OK
