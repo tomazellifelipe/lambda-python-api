@@ -15,9 +15,7 @@ def event_validator(model: BaseModel) -> callable:
             try:
                 event = model(**request.json)
             except ValidationError as e:
-                logging.debug(
-                    "bad request", {"errors": e.errors(), "payload": request.json}
-                )
+                logging.debug("bad request", {"errors": e.errors(), "payload": request.json})
                 return (
                     build_response(body={"errors": e.errors()}),
                     HTTPStatus.BAD_REQUEST,
