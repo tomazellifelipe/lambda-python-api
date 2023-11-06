@@ -12,4 +12,7 @@ app.register_blueprint(v1_router)
 
 @app.route("/health-check/alive", methods=["GET"])
 def alive() -> tuple[Response, int]:
-    return build_response(body={"message": "Pong, system is online"}), HTTPStatus.OK
+    return (
+        build_response(body={"message": "Pong, system is online"}),
+        HTTPStatus.OK,
+    )
