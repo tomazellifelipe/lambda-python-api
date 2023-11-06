@@ -7,7 +7,6 @@ from pydantic import BaseModel, ValidationError
 def parse_and_validate(payload: dict[str, Any], model: BaseModel) -> BaseModel:
     try:
         event = model(**payload)
-    except:
-        logging.debug("Errors", payload)
-        raise ValidationError
+    except ValidationError as e:
+        logging.debug(payload, e.erros())
     return event
