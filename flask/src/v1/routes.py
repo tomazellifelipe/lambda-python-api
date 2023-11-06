@@ -1,11 +1,10 @@
 import logging
 from http import HTTPStatus
 
+from flask import Blueprint, Response, request
 from src.utils.http_response import build_response
 from src.utils.parser import parse_and_validate
 from src.v1.models import Item
-
-from flask import Blueprint, Response, request
 
 router = Blueprint(name="api", import_name=__name__, url_prefix="/api/v1")
 
